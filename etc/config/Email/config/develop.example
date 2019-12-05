@@ -1,0 +1,29 @@
+<?php
+
+//-------------------------------------------------------------------------------------
+// Module Email
+
+$aConfig['MODULE_EMAIL_CONFIG'] = array(
+
+    // Spooler Folder
+    'sAbsolutePathToFolderSpooler' => realpath(__DIR__ . '/../../../') . '/data/spooler/',
+
+    // Attachment Folder
+    'sAbsolutePathToFolderAttachment' => realpath(__DIR__ . '/../../../') . '/data/attachment/',
+
+    // Number of e-mails to be processed simultaneously
+    'iAmountToSpool' => 50,
+
+    // max. time span for new delivery attempts (from "retry")
+    'iMaxSecondsOfRetry' => (60 * 60 * 24), // 24h
+
+    /**
+     * SMTP account settings
+     */
+    'sHost' => '',
+    'iPort' => 465, # ssl=465 | tls=587
+    'sSecure' => 'ssl', # ssl | tls
+    'bAuth' => true,
+    'sUsername' => '',
+    'sPassword' => '',
+);
