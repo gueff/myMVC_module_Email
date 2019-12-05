@@ -13,8 +13,15 @@ $sConfigFileName =
     . getenv('MVC_ENV')
     . '.php';
 
-// load config
-include $sConfigFileName;
-
 // External composer Libraries
-require_once __DIR__ . '/' . $sAppModuleName . '/vendor/autoload.php';
+$sVendorAutoload = __DIR__ . '/' . $sAppModuleName . '/vendor/autoload.php';
+
+if (file_exists($sConfigFileName))
+{
+    include $sConfigFileName;
+}
+
+if (file_exists($sVendorAutoload))
+{
+    require_once $sVendorAutoload;
+}
