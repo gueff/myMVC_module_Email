@@ -13,6 +13,7 @@ $aConfig = array(
             'property' => array(
                 array('key' => 'sAbsolutePathToFolderSpooler',),
                 array('key' => 'sAbsolutePathToFolderAttachment',),
+                array('key' => 'aIgnoreFile', 'var' => 'array', 'value' => array('..', '.', '.ignoreMe')),
                 array('key' => 'sFolderNew', 'value' => 'new'),
                 array('key' => 'sFolderDone', 'value' => 'done'),
                 array('key' => 'sFolderRetry', 'value' => 'retry'),
