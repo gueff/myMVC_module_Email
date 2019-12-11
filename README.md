@@ -89,11 +89,14 @@ Event::RUN('email.model.index._handleRetries',
 
 `email.model.index.escalate`
 ~~~
-\MVC\Event::RUN('email.model.escalate',
+\MVC\Event::RUN('email.model.index.escalate',
     DTArrayObject::create()
         ->add_aKeyValue(
-            DTKeyValue::create()->set_sKey('aFailed')->set_sValue($aFailed)
+            DTKeyValue::create()->set_sKey('sMailFileName')->set_sValue($sMailFileName)
         )
+        ->add_aKeyValue(
+            DTKeyValue::create()->set_sKey('sEscalatedFileName')->set_sValue($sEscalatedFileName)
+        )					
 );
 ~~~
 
