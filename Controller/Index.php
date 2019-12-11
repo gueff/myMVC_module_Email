@@ -12,13 +12,12 @@
 namespace Email\Controller;
 
 use Email\DataType\Config;
-use MVC\Log;
 use MVC\Registry;
 
 class Index
 {
     /**
-     * @var arry JSON
+     * @var array
      */
     protected $aJson;
 
@@ -34,9 +33,7 @@ class Index
      */
 	public function __construct($sString)
 	{
-		Log::WRITE(__METHOD__);
-
-        // decodiere JSON
+        // decode JSON
         $this->aJson = json_decode($sString, true);
 		
 		$this->oModelEmail = new \Email\Model\Index(
@@ -47,23 +44,19 @@ class Index
 	}	
 
 	/**
-	 * Arbeitet die zu versendenden mails im spooler ordner ab
+	 * Processes the mails to be sent in the spooler folder
 	 */
 	public function spool ()
 	{
-		Log::WRITE(__METHOD__);
-		
 		$this->oModelEmail->spool();
 		exit();		
 	}
 	
 	/**
-	 * Eskalation zu gescheiterten Mails
+	 * Escalation to failed mails
 	 */
 	public function escalate ()
 	{
-		Log::WRITE(__METHOD__);
-		
 		$this->oModelEmail->escalate();
 		exit();		
 	}	
