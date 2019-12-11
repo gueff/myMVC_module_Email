@@ -326,18 +326,32 @@ class Index
 
 	/**
 	 * Escalates failed mails
-     * @throws \ReflectionException
-     */
+	 * @throws \ReflectionException
+	 */
 	public function escalate()
 	{
 		$aFailed = $this->getEscalatedMails();
 
-        \MVC\Event::RUN('email.model.index.escalate',
-            DTArrayObject::create()
-                ->add_aKeyValue(
-                    DTKeyValue::create()->set_sKey('aFailed')->set_sValue($aFailed)
-                )
-        );
+		foreach ($aFailed as $sFile)
+		{
+			$sMailFileName = $this->sSpoolerFailedPath . $sFile;
+			$sEscalatedFileName = $this->sSpoolerFailedPath . 'escalated.' . $sFile;
+			
+			\MVC\Event::RUN('email.model.index.escalate',
+			    DTArrayObject::create()
+				->add_aKeyValue(
+				    DTKeyValue::create()->set_sKey('sMailFileName')->set_sValue($sMailFileName)
+				)
+				->add_aKeyValue(
+				    DTKeyValue::create()->set_sKey('sEscalatedFileName')->set_sValue($sEscalatedFileName)
+				)					
+			);
+			
+			$bRename = rename(
+				$sMailFileName,
+				$sEscalatedFileName
+			);	
+		}		
 	}
 
     /**
