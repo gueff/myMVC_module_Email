@@ -23,7 +23,7 @@ $aConfig['MODULE_EMAIL_CONFIG'] = array(
     // max. time span for new delivery attempts (from "retry")
     'iMaxSecondsOfRetry' => (60 * 60 * 24), // 24h
 
-    // Function to be called for SENDING E-Mail
+    // what to do on "send"
     'oCallback' => function(\Email\DataType\Email $oEmail) {
 
         // e-mail sending via SMTP
