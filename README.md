@@ -40,7 +40,7 @@ $aConfig['MODULE_EMAIL_CONFIG'] = array(
          *
          * Simply deactivate the upper "e-mail sending via SMTP" line (comment out).
          */
-        \MVC\Log::WRITE($oEmail->get_subject(), 'email.log');
+        \MVC\Log::WRITE($oEmail, 'email.log');
 
         $oResponse = \MVC\DataType\DTArrayObject::create()
             ->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('bSuccess')->set_sValue(true))
