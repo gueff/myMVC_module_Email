@@ -17,8 +17,36 @@ $aConfig['MODULE_EMAIL_CONFIG'] = array(
     // max. time span for new delivery attempts (from "retry")
     'iMaxSecondsOfRetry' => (60 * 60 * 24), // 24h
 
+    // what to do on "send"
     'oCallback' => function(\Email\DataType\Email $oEmail) {
-        \Email\Model\Smtp::sendViaPhpMailer($oEmail);
+
+        /**
+         * e-mail sending via SMTP
+         * -----------------------
+         * Just keep this activated for sending email via smtp.
+         */
+        return \Email\Model\Smtp::sendViaPhpMailer($oEmail);
+
+        /**
+         * For Testing
+         * -----------------------
+         * This is for not delivering any mail.
+         * instead of sending via smtp, the subject of each individual e-mail
+         * is written to "test.log"
+         *
+         * This is good for running tests with lots of email sweeps.
+         * So the SMTP mail server is not loaded.
+         *
+         * Simply deactivate the upper "e-mail sending via SMTP" line (comment out).
+         */
+        \MVC\Log::WRITE($oEmail->get_subject(), 'email.log');
+
+        $oResponse = \MVC\DataType\DTArrayObject::create()
+            ->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('bSuccess')->set_sValue(true))
+            ->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('sMessage')->set_sValue("TEST\t" . ' *** Closure *** '))
+            ->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('oException')->set_sValue(new \Exception("TEST\t" . ' *** Closure *** ')));
+
+        return $oResponse;
     },
 
     /**
