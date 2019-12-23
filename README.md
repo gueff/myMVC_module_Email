@@ -62,6 +62,31 @@ $aConfig['MODULE_EMAIL_CONFIG'] = array(
 );
 ~~~
 
+## Create and send an E-Mail
+~~~
+$oModelEmail = new \Email\Model\Index(
+    Config::create(
+        Registry::get('MODULE_EMAIL_CONFIG')
+    )
+);
+
+// create an email
+$oEmail = Email::create()
+    ->set_subject('Test')
+    ->set_recipientMailAdresses(array('foo@example.com'))
+    ->set_senderMail('bar@example.com')
+    ->set_senderName('bar from example')
+    ->set_text('Test Text')
+    ->set_html('Test HTML')
+;
+
+// give it to spooler
+$oModelEmail->saveToSpooler($oEmail);
+
+// spool!
+$oModelEmail->spool();
+~~~
+
 ## Spool
 
 - E-mail files from the `retry` folder are read and moved to either `new` or `fail`, depending on the 
