@@ -72,7 +72,7 @@ $oModelEmail = new \Email\Model\Index(
 );
 
 // create an email
-$oEmail = Email::create()
+$oEmail = \Email\DataType\Email::create()
     ->set_subject('Test')
     ->set_recipientMailAdresses(array('foo@example.com'))
     ->set_senderMail('bar@example.com')
