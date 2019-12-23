@@ -20,6 +20,7 @@ $aConfig = array(
                 array('key' => 'sFolderFail', 'value' => 'fail'),
                 array('key' => 'iAmountToSpool', 'value' => 10, 'var' => 'int'),
                 array('key' => 'iMaxSecondsOfRetry', 'value' => (60 * 60 * 2), 'var' => 'int'),
+                array('key' => 'oCallback', 'value' => null),
             ),
         ),
         array(
@@ -38,7 +39,7 @@ $aConfig = array(
                 array(
                     'key' => 'oAttachment',
                     'var' => '\\MVC\\DataType\\DTArrayObject',
-                    'value' => 'null',
+                    'value' => '\MVC\DataType\DTArrayObject::create()',
                 ),
             ),
         ),

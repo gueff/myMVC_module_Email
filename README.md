@@ -3,8 +3,8 @@
 
 - Linux
 - php 7
-- [myMVC > 1.1.1 (dev)](https://github.com/gueff/myMVC/tree/9d2fab5b4e7f9fcd57a788ab86a145c169e4c9ad)
-    - ZIP: https://github.com/gueff/myMVC/archive/9d2fab5b4e7f9fcd57a788ab86a145c169e4c9ad.zip
+- [myMVC > 1.1.1 (current; dev-master)](https://github.com/gueff/myMVC)
+    - ZIP: https://github.com/gueff/myMVC/archive/master.zip
         
 ## Config
 
@@ -22,6 +22,33 @@ $aConfig['MODULE_EMAIL_CONFIG'] = array(
 
     // max. time span for new delivery attempts (from "retry")
     'iMaxSecondsOfRetry' => (60 * 60 * 24), // 24h
+
+    // Function to be called for SENDING E-Mail
+    'oCallback' => function(\Email\DataType\Email $oEmail) {
+
+        // e-mail sending via SMTP
+        return \Email\Model\Smtp::sendViaPhpMailer($oEmail);
+
+        /**
+         * This is for not delivering any mail:
+         *------------------------------------- 
+         * instead of sending via smtp, the subject of each individual e-mail
+         * is written to "test.log"
+         *
+         * This is good for running tests with lots of email sweeps.
+         * So the SMTP mail server is not loaded.
+         *
+         * Simply deactivate the upper "e-mail sending via SMTP" line (comment out).
+         */
+        \MVC\Log::WRITE($oEmail->get_subject(), 'email.log');
+
+        $oResponse = \MVC\DataType\DTArrayObject::create()
+            ->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('bSuccess')->set_sValue(true))
+            ->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('sMessage')->set_sValue("TEST\t" . ' *** Closure *** '))
+            ->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('oException')->set_sValue(new \Exception("TEST\t" . ' *** Closure *** ')));
+
+        return $oResponse;
+    },
 
     /**
      * SMTP account settings

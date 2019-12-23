@@ -7,7 +7,7 @@ namespace Email\DataType;
 
 class Email
 {
-	const DTHASH = 'e93daf015498039fdcf1825225a1768c';
+	const DTHASH = 'becfb5736c5373b632484fbb3f091108';
 
 	/**
 	 * @var string
@@ -56,7 +56,7 @@ class Email
 		$this->html = '';
 		$this->senderMail = '';
 		$this->senderName = '';
-		$this->oAttachment = null;
+		$this->oAttachment = \MVC\DataType\DTArrayObject::create();
 
 		foreach ($aData as $sKey => $mValue)
 		{
@@ -328,7 +328,7 @@ class Email
 	 */
 	public function getDataTypeConfigJSON()
 	{
-		return '{"name":"Email","file":"Email.php","extends":"","namespace":"Email\\\\DataType","constant":[],"property":[{"key":"subject","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"recipientMailAdresses","var":"array","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"text","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"html","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"senderMail","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"senderName","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"oAttachment","var":"\\\\MVC\\\\DataType\\\\DTArrayObject","value":"null","visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true}],"createHelperMethods":true}';
+		return '{"name":"Email","file":"Email.php","extends":"","namespace":"Email\\\\DataType","constant":[],"property":[{"key":"subject","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"recipientMailAdresses","var":"array","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"text","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"html","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"senderMail","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"senderName","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"oAttachment","var":"\\\\MVC\\\\DataType\\\\DTArrayObject","value":"\\\\MVC\\\\DataType\\\\DTArrayObject::create()","visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true}],"createHelperMethods":true}';
 	}
 
 }

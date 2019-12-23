@@ -29,8 +29,8 @@ class Smtp
      */
     public static function sendViaPhpMailer(Email $oEmail)
     {
-        /** @var boolean $bSuccess */
         $bSuccess = false;
+        $sMessage = __METHOD__;
         $oException = null;
 
         try {
@@ -105,10 +105,10 @@ class Smtp
             );
         }
 
-        $oResponse = DTArrayObject::create()
-            ->add_aKeyValue(DTKeyValue::create()->set_sKey('bSuccess')->set_sValue($bSuccess))
-            ->add_aKeyValue(DTKeyValue::create()->set_sKey('sMessage')->set_sValue($sMessage))
-            ->add_aKeyValue(DTKeyValue::create()->set_sKey('oException')->set_sValue($oException));
+        $oResponse = \MVC\DataType\DTArrayObject::create()
+            ->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('bSuccess')->set_sValue($bSuccess))
+            ->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('sMessage')->set_sValue($sMessage))
+            ->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('oException')->set_sValue($oException));
 
         Event::RUN('email.model.index.send.response', $oResponse);
 

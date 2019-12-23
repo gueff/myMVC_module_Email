@@ -17,6 +17,10 @@ $aConfig['MODULE_EMAIL_CONFIG'] = array(
     // max. time span for new delivery attempts (from "retry")
     'iMaxSecondsOfRetry' => (60 * 60 * 24), // 24h
 
+    'oCallback' => function(\Email\DataType\Email $oEmail) {
+        \Email\Model\Smtp::sendViaPhpMailer($oEmail);
+    },
+
     /**
      * SMTP account settings
      */

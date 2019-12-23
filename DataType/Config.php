@@ -7,7 +7,7 @@ namespace Email\DataType;
 
 class Config
 {
-	const DTHASH = '7a2c0a88f4936d3b58142c04b31d2177';
+	const DTHASH = '946b93efc4a4378ae285c3f79bfd8543';
 
 	/**
 	 * @var string
@@ -55,6 +55,11 @@ class Config
 	protected $iMaxSecondsOfRetry;
 
 	/**
+	 * @var string
+	 */
+	protected $oCallback;
+
+	/**
 	 * Config constructor.
 	 * @param array $aData
 	 */
@@ -69,6 +74,7 @@ class Config
 		$this->sFolderFail = "fail";
 		$this->iAmountToSpool = 10;
 		$this->iMaxSecondsOfRetry = 7200;
+		$this->oCallback = '';
 
 		foreach ($aData as $sKey => $mValue)
 		{
@@ -192,6 +198,17 @@ class Config
 	}
 
 	/**
+	 * @param string $mValue 
+	 * @return $this
+	 */
+	public function set_oCallback($mValue)
+	{
+		$this->oCallback = $mValue;
+
+		return $this;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function get_sAbsolutePathToFolderSpooler()
@@ -261,6 +278,14 @@ class Config
 	public function get_iMaxSecondsOfRetry()
 	{
 		return $this->iMaxSecondsOfRetry;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function get_oCallback()
+	{
+		return $this->oCallback;
 	}
 
 	/**
@@ -336,6 +361,14 @@ class Config
 	}
 
 	/**
+	 * @return string
+	 */
+	public static function getPropertyName_oCallback()
+	{
+        return 'oCallback';
+	}
+
+	/**
 	 * @return false|string JSON
 	 */
 	public function __toString()
@@ -394,7 +427,7 @@ class Config
 	 */
 	public function getDataTypeConfigJSON()
 	{
-		return '{"name":"Config","file":"Config.php","extends":"","namespace":"Email\\\\DataType","constant":[],"property":[{"key":"sAbsolutePathToFolderSpooler","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"sAbsolutePathToFolderAttachment","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"aIgnoreFile","var":"array","value":["..",".",".ignoreMe"],"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"sFolderNew","var":"string","value":"new","visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"sFolderDone","var":"string","value":"done","visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"sFolderRetry","var":"string","value":"retry","visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"sFolderFail","var":"string","value":"fail","visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"iAmountToSpool","var":"int","value":10,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"iMaxSecondsOfRetry","var":"int","value":7200,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true}],"createHelperMethods":true}';
+		return '{"name":"Config","file":"Config.php","extends":"","namespace":"Email\\\\DataType","constant":[],"property":[{"key":"sAbsolutePathToFolderSpooler","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"sAbsolutePathToFolderAttachment","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"aIgnoreFile","var":"array","value":["..",".",".ignoreMe"],"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"sFolderNew","var":"string","value":"new","visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"sFolderDone","var":"string","value":"done","visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"sFolderRetry","var":"string","value":"retry","visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"sFolderFail","var":"string","value":"fail","visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"iAmountToSpool","var":"int","value":10,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"iMaxSecondsOfRetry","var":"int","value":7200,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"oCallback","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true}],"createHelperMethods":true}';
 	}
 
 }
