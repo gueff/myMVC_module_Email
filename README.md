@@ -63,7 +63,8 @@ $aConfig['MODULE_EMAIL_CONFIG'] = array(
 ~~~
 
 ## Create and send an E-Mail
-~~~
+
+~~~php
 $oModelEmail = new \Email\Model\Index(
     Config::create(
         Registry::get('MODULE_EMAIL_CONFIG')
