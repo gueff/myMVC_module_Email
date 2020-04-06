@@ -80,11 +80,18 @@ class Index
     protected $aIgnoreFile = array('..', '.');
 
     /**
+     * @var \Email\DataType\Config
+     */
+    protected $oConfig;
+
+    /**
      * Index constructor.
      * @param Config $oConfig
      */
 	public function __construct (Config $oConfig)
     {
+        $this->oConfig = $oConfig;
+
         // fallback abs spooler dir
         if (empty($oConfig->get_sAbsolutePathToFolderSpooler()) || false === file_exists($oConfig->get_sAbsolutePathToFolderSpooler()))
         {
@@ -384,7 +391,11 @@ class Index
      */
 	public function send (Email $oEmail)
 	{
-        $oDTArrayObject = Smtp::sendViaPhpMailer($oEmail);
+        $oCallback = $this->oConfig->get_oCallback();
+        $oDTArrayObject = call_user_func(
+            $oCallback,
+            $oEmail
+        );
 
 	    return $oDTArrayObject;
 	}
