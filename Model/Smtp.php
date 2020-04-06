@@ -79,6 +79,7 @@ class Smtp
                 }
             }
 
+            $oPHPMailer->CharSet = 'UTF-8';
             $bSuccess = $oPHPMailer->Send();
             $sMessage = json_encode($bSuccess);
 
