@@ -18,6 +18,8 @@ use LCP\Model\LCPHelper;
 use MVC\DataType\DTArrayObject;
 use MVC\DataType\DTKeyValue;
 use MVC\Event;
+use MVC\Helper;
+use MVC\Log;
 
 
 class Index
@@ -177,7 +179,7 @@ class Index
 	public function spool ()
 	{
 		$this->_handleRetries();
-		
+
 		// mails to be sent from New
 		$aFiles = array_diff(scandir ($this->sSpoolerNewPath), $this->aIgnoreFile);
 
@@ -194,28 +196,27 @@ class Index
 				break;
 			}
 
-			// get Email
-			$aMail = json_decode(file_get_contents($this->sSpoolerNewPath . $sFile), true);
-			$oEmail = Email::create($aMail);
-
             // send eMail
             /** @var DTArrayObject $oSendResponse */
-            $oSendResponse = $this->send($oEmail);
-            $sMessage = '';
-            $sOldName = $this->sSpoolerNewPath . $sFile;
+            $oSendResponse = $this->send(
+                $sFile,
+                basename($this->sSpoolerNewPath)
+            );
 
-            if (true === $oSendResponse->getDTKeyValueByKey('bSuccess')->get_sValue())
-            {
-                $sNewName = $this->sSpoolerDonePath . $sFile;
-                $sStatus = basename($this->sSpoolerDonePath);
-                $sMessage = 'move mail to "' . $sStatus . '"';
-            }
-            else
-            {
-                $sNewName = $this->sSpoolerRetryPath . $sFile;
-                $sStatus = basename($this->sSpoolerRetryPath);
-                $sMessage = 'move mail to "' . $sStatus . '"';
-            }
+            Event::RUN('email.model.index.send.response', $oSendResponse);
+
+            $sNextStatus = trim($oSendResponse->getDTKeyValueByKey('sNextStatus')->get_sValue());
+            (true === empty($sNextStatus)) ? $sNextStatus = 'retry' : false;
+
+            $sMoveTo = $this->sSpoolerRetryPath;
+            ('retry' === $sNextStatus) ? $sMoveTo = $this->sSpoolerRetryPath: false;
+            ('done' === $sNextStatus) ? $sMoveTo = $this->sSpoolerDonePath: false;
+            ('fail' === $sNextStatus) ? $sMoveTo = $this->sSpoolerFailedPath : false;
+            ('new' === $sNextStatus) ? $sMoveTo = $this->sSpoolerNewPath : false;
+
+            $sOldName = $this->sSpoolerNewPath . $sFile;
+            $sNewName = $sMoveTo . $sFile;
+            $sMessage = 'move mail to "' . $sNextStatus . '"';
 
             $bRename = rename(
                 $sOldName,
@@ -228,7 +229,7 @@ class Index
 
                 ->add_aKeyValue(DTKeyValue::create()->set_sKey('sOldname')->set_sValue($sOldName))
                 ->add_aKeyValue(DTKeyValue::create()->set_sKey('sNewname')->set_sValue($sNewName))
-                ->add_aKeyValue(DTKeyValue::create()->set_sKey('sStatus')->set_sValue($sStatus))
+                ->add_aKeyValue(DTKeyValue::create()->set_sKey('sStatus')->set_sValue($sNextStatus))
             ;
 
             $oResponse = DTArrayObject::create()
@@ -261,6 +262,8 @@ class Index
 			// Calculate time difference
 			$iTimeDiff = (time() - $sFilemtime);
 
+			$oDTArrayObject = DTArrayObject::create();
+
 			// Try shipping again;
 			// so move to /new folder
 			if ($iTimeDiff < $this->iMaxSecondsOfRetry)
@@ -276,6 +279,8 @@ class Index
                     $sOldName,
                     $sNewName
 				);
+
+                $oDTArrayObject->add_aKeyValue(DTKeyValue::create()->set_sKey('sStatus')->set_sValue(basename($this->sSpoolerNewPath)));
 			}
 			// Don't try again;
 			// Move final to /fail folder
@@ -292,15 +297,18 @@ class Index
                     $sOldName,
                     $sNewName
 				);
+
+                $oDTArrayObject->add_aKeyValue(DTKeyValue::create()->set_sKey('sStatus')->set_sValue(basename($this->sSpoolerFailedPath)));
 			}
 
-            Event::RUN('email.model.index._handleRetries',
-                DTArrayObject::create()
-                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('sOldname')->set_sValue($sOldName))
-                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('sNewname')->set_sValue($sNewName))
-                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('bMoveSuccess')->set_sValue($bRename))
-                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('aMessage')->set_sValue($aMsg))
-            );
+            $oDTArrayObject
+                ->add_aKeyValue(DTKeyValue::create()->set_sKey('sOldname')->set_sValue($sOldName))
+                ->add_aKeyValue(DTKeyValue::create()->set_sKey('sNewname')->set_sValue($sNewName))
+                ->add_aKeyValue(DTKeyValue::create()->set_sKey('bMoveSuccess')->set_sValue($bRename))
+                ->add_aKeyValue(DTKeyValue::create()->set_sKey('aMessage')->set_sValue($aMsg))
+            ;
+
+            Event::RUN('email.model.index._handleRetries', $oDTArrayObject);
 		}		
 	}
 
@@ -384,21 +392,61 @@ class Index
     }
 
     /**
-     * Send E-Mail
-     * @param Email $oEmail
-     * @return DTArrayObject
-     * @throws \ReflectionException
+     * @param string $sFile
+     * @param string $sFromFolder
+     *
+     * @return mixed|\MVC\DataType\DTArrayObject
      */
-	public function send (Email $oEmail)
-	{
+    public function send ($sFile = '', $sFromFolder = 'new')
+    {
+        $sFile = trim($sFile);
+        $sFromFolder = trim($sFromFolder);
+        $aMail = array();
+
+        // get Email
+        $sFileEmail = Helper::secureFilePath($this->sAbsolutePathToFolderSpooler . '/' . $sFromFolder . '/' . $sFile);
+
+        if (true !== empty($sFile) || true !== empty($sFromFolder) || true === file_exists($sFileEmail))
+        {
+            $aMail = json_decode(file_get_contents($sFileEmail),true);
+        }
+
+        $oEmail = Email::create($aMail);
+
+        // recipient email address is mandatory
+        if (false === (boolean) filter_var(current($oEmail->get_recipientMailAdresses()), FILTER_VALIDATE_EMAIL))
+        {
+            return DTArrayObject::create()
+                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('bSuccess')->set_sValue(false))
+                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('sNextStatus')->set_sValue('fail'))
+                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('sMessage')->set_sValue('move to FAIL because of no recipient email address is given'))
+                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('oEmail')->set_sValue($oEmail))
+                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('oException')->set_sValue(''))
+                ;
+        }
+
         $oCallback = $this->oConfig->get_oCallback();
-        $oDTArrayObject = call_user_func(
+
+        // a callable callback is mandatory
+        if (false === is_callable($oCallback))
+        {
+            return DTArrayObject::create()
+                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('bSuccess')->set_sValue(false))
+                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('sNextStatus')->set_sValue('fail'))
+                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('sMessage')->set_sValue('callback is not callable'))
+                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('oEmail')->set_sValue($oEmail))
+                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('oException')->set_sValue(new \Exception('callback is not callable')))
+                ;
+        }
+
+        /** @var \MVC\DataType\DTArrayObject $oDTArrayObject */
+        $oResponse = call_user_func(
             $oCallback,
             $oEmail
         );
 
-	    return $oDTArrayObject;
-	}
+        return $oResponse;
+    }
 
     /**
      * @param string $sAbsoluteFilePath
