@@ -23,8 +23,9 @@ use PHPMailer\PHPMailer\Exception;
 class Smtp
 {
     /**
-     * @param Email $oEmail
-     * @return DTArrayObject
+     * @param \Email\DataType\Email $oEmail
+     *
+     * @return \MVC\DataType\DTArrayObject
      * @throws \ReflectionException
      */
     public static function sendViaPhpMailer(Email $oEmail)
@@ -90,8 +91,11 @@ class Smtp
 
             Event::RUN ('mvc.error',
                 DTArrayObject::create()
+                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('bSuccess')->set_sValue(false))
+                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('sNextStatus')->set_sValue('retry'))
                     ->add_aKeyValue(DTKeyValue::create()->set_sKey('sMessage')->set_sValue($oException->getMessage()))
                     ->add_aKeyValue(DTKeyValue::create()->set_sKey('oException')->set_sValue($oException))
+                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('oEmail')->set_sValue($oEmail))
             );
 
         } catch (Exception $oException) {
@@ -101,17 +105,21 @@ class Smtp
 
             Event::RUN ('mvc.error',
                 DTArrayObject::create()
+                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('bSuccess')->set_sValue(false))
+                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('sNextStatus')->set_sValue('retry'))
                     ->add_aKeyValue(DTKeyValue::create()->set_sKey('sMessage')->set_sValue($oException->getMessage()))
                     ->add_aKeyValue(DTKeyValue::create()->set_sKey('oException')->set_sValue($oException))
+                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('oEmail')->set_sValue($oEmail))
             );
         }
 
-        $oResponse = \MVC\DataType\DTArrayObject::create()
-            ->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('bSuccess')->set_sValue($bSuccess))
-            ->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('sMessage')->set_sValue($sMessage))
-            ->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('oException')->set_sValue($oException));
-
-        Event::RUN('email.model.index.send.response', $oResponse);
+        $oResponse = DTArrayObject::create()
+            ->add_aKeyValue(DTKeyValue::create()->set_sKey('bSuccess')->set_sValue($bSuccess))
+            ->add_aKeyValue(DTKeyValue::create()->set_sKey('sNextStatus')->set_sValue(((true === $bSuccess) ? 'done' : 'retry')))
+            ->add_aKeyValue(DTKeyValue::create()->set_sKey('sMessage')->set_sValue($sMessage))
+            ->add_aKeyValue(DTKeyValue::create()->set_sKey('oEmail')->set_sValue($oEmail))
+            ->add_aKeyValue(DTKeyValue::create()->set_sKey('oException')->set_sValue($oException))
+        ;
 
         return $oResponse;
     }
