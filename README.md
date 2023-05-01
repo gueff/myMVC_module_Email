@@ -10,7 +10,27 @@
 
 ---
 
+## Install
+
+_cd into the modules folder of your `myMVC3.2.x` copy; e.g.:_
+~~~bash
+cd /var/www/myMVC/modules/;
+~~~
+
+_clone `myMVC_module_Email` as `Email`_
+~~~bash
+git clone https://github.com/gueff/myMVC_module_Email.git Email;
+~~~
+
+_run install shell script_  
+~~~bash
+./_install.sh
+~~~
+
+
 ## Config
+
+add this config to the config of your primary working module.
 
 ~~~php
 //-------------------------------------------------------------------------------------
@@ -64,6 +84,8 @@ $aConfig['MODULE']['Email'] = array(
 ---
 
 ## Usage
+
+..in your primary working Module:
 
 _init_  
 ~~~php
