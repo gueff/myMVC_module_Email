@@ -1,8 +1,8 @@
 
-Zu versendende Emails werden über einen Spooler abgearbeitet. 
-Für die jeweils verschiedenen Zustände (new, done, retry, fail) gibt es eigene Ordner in welche die Emails verschoben werden. 
-Für das Verfassen von Email und Anhang stehen Datentyp Klassen bereit, 
-welche das deklarieren vereinfachen. Emails werden nach Übergabe als JSON files gespeichert.
+Emails to be sent are processed via a spooler. 
+For each of the different states (new, done, retry, fail) there are separate folders into which the emails are moved. 
+Data type classes are available for composing emails and attachments, which simplify the declaration. 
+Emails are saved as JSON files after delivery.
 
 ---
 
