@@ -69,16 +69,19 @@ class Smtp
 
             // Attachments
             /** @var array $aDTArrayObject */
-            foreach ($oEmail->get_oAttachment() as $aDTArrayObject)
+            if (true === is_array($oEmail->get_oAttachment()))
             {
-                /** @var array $aDTKeyValue */
-                foreach ($aDTArrayObject as $aDTKeyValue)
+                foreach ($oEmail->get_oAttachment() as $aDTArrayObject)
                 {
-                    $oDTKeyValue = DTKeyValue::create($aDTKeyValue);
-                    $oPHPMailer->addAttachment(
-                        $oDTKeyValue->get_sValue()['file'],
-                        $oDTKeyValue->get_sValue()['name']
-                    );
+                    /** @var array $aDTKeyValue */
+                    foreach ($aDTArrayObject as $aDTKeyValue)
+                    {
+                        $oDTKeyValue = DTKeyValue::create($aDTKeyValue);
+                        $oPHPMailer->addAttachment(
+                            $oDTKeyValue->get_sValue()['file'],
+                            $oDTKeyValue->get_sValue()['name']
+                        );
+                    }
                 }
             }
 
