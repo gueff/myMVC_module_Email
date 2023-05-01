@@ -1,4 +1,11 @@
- 
+
+Zu versendende Emails werden über einen Spooler abgearbeitet. 
+Für die jeweils verschiedenen Zustände (new, done, retry, fail) gibt es eigene Ordner in welche die Emails verschoben werden. 
+Für das Verfassen von Email und Anhang stehen Datentyp Klassen bereit, 
+welche das deklarieren vereinfachen. Emails werden nach Übergabe als JSON files gespeichert.
+
+---
+
 # Requirements
 
 - Linux
@@ -10,7 +17,7 @@
 
 ---
 
-## Install
+## Installation
 
 _cd into the modules folder of your `myMVC3.2.x` copy; e.g.:_
 ~~~bash
@@ -145,14 +152,6 @@ whether the maximum time for retry attempts ($iMaxSecondsOfRetry) for retry mail
 - _failed_: Email files are moved to the `retry` folder
 
 The maximum time period for new delivery attempts is defined in the config (see above) with the key `iMaxSecondsOfRetry`.
-
----
-
-## Installation
-
-~~~bash
-./_install.sh
-~~~
 
 ---
 
