@@ -129,7 +129,7 @@ The maximum time period for new delivery attempts is defined in the config (see 
 ## Installation
 
 ~~~bash
-./install.sh
+./_install.sh
 ~~~
 
 ---
