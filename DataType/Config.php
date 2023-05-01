@@ -5,66 +5,83 @@
  */
 namespace Email\DataType;
 
+use MVC\MVCTrait\TraitDataType;
+
 class Config
 {
-	const DTHASH = '946b93efc4a4378ae285c3f79bfd8543';
+	use TraitDataType;
+
+	const DTHASH = 'dedb04f415863929fd987f80fcbd6ebb';
 
 	/**
+	 * @required false
 	 * @var string
 	 */
 	protected $sAbsolutePathToFolderSpooler;
 
 	/**
+	 * @required false
 	 * @var string
 	 */
 	protected $sAbsolutePathToFolderAttachment;
 
 	/**
+	 * @required false
 	 * @var array
 	 */
 	protected $aIgnoreFile;
 
 	/**
+	 * @required false
 	 * @var string
 	 */
 	protected $sFolderNew;
 
 	/**
+	 * @required false
 	 * @var string
 	 */
 	protected $sFolderDone;
 
 	/**
+	 * @required false
 	 * @var string
 	 */
 	protected $sFolderRetry;
 
 	/**
+	 * @required false
 	 * @var string
 	 */
 	protected $sFolderFail;
 
 	/**
+	 * @required false
 	 * @var int
 	 */
 	protected $iAmountToSpool;
 
 	/**
+	 * @required false
 	 * @var int
 	 */
 	protected $iMaxSecondsOfRetry;
 
 	/**
-	 * @var string
+	 * @required false
+	 * @var \Closure
 	 */
 	protected $oCallback;
 
 	/**
 	 * Config constructor.
 	 * @param array $aData
+	 * @throws \ReflectionException 
 	 */
 	public function __construct(array $aData = array())
 	{
+		\MVC\Event::RUN ('Config.__construct.before', \MVC\DataType\DTArrayObject::create($aData)->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
 		$this->sAbsolutePathToFolderSpooler = '';
 		$this->sAbsolutePathToFolderAttachment = '';
 		$this->aIgnoreFile = array(0=>'..',1=>'.',2=>'.ignoreMe',);
@@ -74,7 +91,7 @@ class Config
 		$this->sFolderFail = "fail";
 		$this->iAmountToSpool = 10;
 		$this->iMaxSecondsOfRetry = 7200;
-		$this->oCallback = '';
+		$this->oCallback = null;
 
 		foreach ($aData as $sKey => $mValue)
 		{
@@ -85,206 +102,273 @@ class Config
 				$this->$sMethod($mValue);
 			}
 		}
+
+		\MVC\Event::RUN ('Config.__construct.after', \MVC\DataType\DTArrayObject::create($aData));
 	}
 
     /**
      * @param array $aData
      * @return Config
+     * @throws \ReflectionException
      */
     public static function create(array $aData = array())
     {
+        \MVC\Event::RUN ('Config.create.before', \MVC\DataType\DTArrayObject::create($aData)->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+        
         $oObject = new self($aData);
 
+        \MVC\Event::RUN ('Config.create.after', \MVC\DataType\DTArrayObject::create()->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('Config')->set_sValue($oObject)));
+        
         return $oObject;
     }
 
 	/**
-	 * @param string $mValue 
+	 * @param string $aValue 
 	 * @return $this
+	 * @throws \ReflectionException
 	 */
-	public function set_sAbsolutePathToFolderSpooler($mValue)
+	public function set_sAbsolutePathToFolderSpooler($aValue)
 	{
-		$this->sAbsolutePathToFolderSpooler = $mValue;
+		\MVC\Event::RUN ('Config.set_sAbsolutePathToFolderSpooler.before', \MVC\DataType\DTArrayObject::create(array('sAbsolutePathToFolderSpooler' => $aValue))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
+		$this->sAbsolutePathToFolderSpooler = $aValue;
 
 		return $this;
 	}
 
 	/**
-	 * @param string $mValue 
+	 * @param string $aValue 
 	 * @return $this
+	 * @throws \ReflectionException
 	 */
-	public function set_sAbsolutePathToFolderAttachment($mValue)
+	public function set_sAbsolutePathToFolderAttachment($aValue)
 	{
-		$this->sAbsolutePathToFolderAttachment = $mValue;
+		\MVC\Event::RUN ('Config.set_sAbsolutePathToFolderAttachment.before', \MVC\DataType\DTArrayObject::create(array('sAbsolutePathToFolderAttachment' => $aValue))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
+		$this->sAbsolutePathToFolderAttachment = $aValue;
 
 		return $this;
 	}
 
 	/**
-	 * @param array $mValue 
+	 * @param array $aValue 
 	 * @return $this
+	 * @throws \ReflectionException
 	 */
-	public function set_aIgnoreFile($mValue)
+	public function set_aIgnoreFile($aValue)
 	{
-		$this->aIgnoreFile = $mValue;
+		\MVC\Event::RUN ('Config.set_aIgnoreFile.before', \MVC\DataType\DTArrayObject::create(array('aIgnoreFile' => $aValue))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
+		$this->aIgnoreFile = $aValue;
 
 		return $this;
 	}
 
 	/**
-	 * @param string $mValue 
+	 * @param string $aValue 
 	 * @return $this
+	 * @throws \ReflectionException
 	 */
-	public function set_sFolderNew($mValue)
+	public function set_sFolderNew($aValue)
 	{
-		$this->sFolderNew = $mValue;
+		\MVC\Event::RUN ('Config.set_sFolderNew.before', \MVC\DataType\DTArrayObject::create(array('sFolderNew' => $aValue))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
+		$this->sFolderNew = $aValue;
 
 		return $this;
 	}
 
 	/**
-	 * @param string $mValue 
+	 * @param string $aValue 
 	 * @return $this
+	 * @throws \ReflectionException
 	 */
-	public function set_sFolderDone($mValue)
+	public function set_sFolderDone($aValue)
 	{
-		$this->sFolderDone = $mValue;
+		\MVC\Event::RUN ('Config.set_sFolderDone.before', \MVC\DataType\DTArrayObject::create(array('sFolderDone' => $aValue))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
+		$this->sFolderDone = $aValue;
 
 		return $this;
 	}
 
 	/**
-	 * @param string $mValue 
+	 * @param string $aValue 
 	 * @return $this
+	 * @throws \ReflectionException
 	 */
-	public function set_sFolderRetry($mValue)
+	public function set_sFolderRetry($aValue)
 	{
-		$this->sFolderRetry = $mValue;
+		\MVC\Event::RUN ('Config.set_sFolderRetry.before', \MVC\DataType\DTArrayObject::create(array('sFolderRetry' => $aValue))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
+		$this->sFolderRetry = $aValue;
 
 		return $this;
 	}
 
 	/**
-	 * @param string $mValue 
+	 * @param string $aValue 
 	 * @return $this
+	 * @throws \ReflectionException
 	 */
-	public function set_sFolderFail($mValue)
+	public function set_sFolderFail($aValue)
 	{
-		$this->sFolderFail = $mValue;
+		\MVC\Event::RUN ('Config.set_sFolderFail.before', \MVC\DataType\DTArrayObject::create(array('sFolderFail' => $aValue))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
+		$this->sFolderFail = $aValue;
 
 		return $this;
 	}
 
 	/**
-	 * @param int $mValue 
+	 * @param int $aValue 
 	 * @return $this
+	 * @throws \ReflectionException
 	 */
-	public function set_iAmountToSpool($mValue)
+	public function set_iAmountToSpool($aValue)
 	{
-		$this->iAmountToSpool = $mValue;
+		\MVC\Event::RUN ('Config.set_iAmountToSpool.before', \MVC\DataType\DTArrayObject::create(array('iAmountToSpool' => $aValue))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
+		$this->iAmountToSpool = $aValue;
 
 		return $this;
 	}
 
 	/**
-	 * @param int $mValue 
+	 * @param int $aValue 
 	 * @return $this
+	 * @throws \ReflectionException
 	 */
-	public function set_iMaxSecondsOfRetry($mValue)
+	public function set_iMaxSecondsOfRetry($aValue)
 	{
-		$this->iMaxSecondsOfRetry = $mValue;
+		\MVC\Event::RUN ('Config.set_iMaxSecondsOfRetry.before', \MVC\DataType\DTArrayObject::create(array('iMaxSecondsOfRetry' => $aValue))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
+		$this->iMaxSecondsOfRetry = $aValue;
 
 		return $this;
 	}
 
 	/**
-	 * @param string $mValue 
+	 * @param \Closure $aValue 
 	 * @return $this
+	 * @throws \ReflectionException
 	 */
-	public function set_oCallback($mValue)
+	public function set_oCallback($aValue)
 	{
-		$this->oCallback = $mValue;
+		\MVC\Event::RUN ('Config.set_oCallback.before', \MVC\DataType\DTArrayObject::create(array('oCallback' => $aValue))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
+		$this->oCallback = $aValue;
 
 		return $this;
 	}
 
 	/**
 	 * @return string
+	 * @throws \ReflectionException
 	 */
 	public function get_sAbsolutePathToFolderSpooler()
 	{
+		\MVC\Event::RUN ('Config.get_sAbsolutePathToFolderSpooler.before', \MVC\DataType\DTArrayObject::create()->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('sAbsolutePathToFolderSpooler')->set_sValue($this->sAbsolutePathToFolderSpooler))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
 		return $this->sAbsolutePathToFolderSpooler;
 	}
 
 	/**
 	 * @return string
+	 * @throws \ReflectionException
 	 */
 	public function get_sAbsolutePathToFolderAttachment()
 	{
+		\MVC\Event::RUN ('Config.get_sAbsolutePathToFolderAttachment.before', \MVC\DataType\DTArrayObject::create()->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('sAbsolutePathToFolderAttachment')->set_sValue($this->sAbsolutePathToFolderAttachment))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
 		return $this->sAbsolutePathToFolderAttachment;
 	}
 
 	/**
 	 * @return array
+	 * @throws \ReflectionException
 	 */
 	public function get_aIgnoreFile()
 	{
+		\MVC\Event::RUN ('Config.get_aIgnoreFile.before', \MVC\DataType\DTArrayObject::create()->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aIgnoreFile')->set_sValue($this->aIgnoreFile))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
 		return $this->aIgnoreFile;
 	}
 
 	/**
 	 * @return string
+	 * @throws \ReflectionException
 	 */
 	public function get_sFolderNew()
 	{
+		\MVC\Event::RUN ('Config.get_sFolderNew.before', \MVC\DataType\DTArrayObject::create()->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('sFolderNew')->set_sValue($this->sFolderNew))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
 		return $this->sFolderNew;
 	}
 
 	/**
 	 * @return string
+	 * @throws \ReflectionException
 	 */
 	public function get_sFolderDone()
 	{
+		\MVC\Event::RUN ('Config.get_sFolderDone.before', \MVC\DataType\DTArrayObject::create()->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('sFolderDone')->set_sValue($this->sFolderDone))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
 		return $this->sFolderDone;
 	}
 
 	/**
 	 * @return string
+	 * @throws \ReflectionException
 	 */
 	public function get_sFolderRetry()
 	{
+		\MVC\Event::RUN ('Config.get_sFolderRetry.before', \MVC\DataType\DTArrayObject::create()->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('sFolderRetry')->set_sValue($this->sFolderRetry))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
 		return $this->sFolderRetry;
 	}
 
 	/**
 	 * @return string
+	 * @throws \ReflectionException
 	 */
 	public function get_sFolderFail()
 	{
+		\MVC\Event::RUN ('Config.get_sFolderFail.before', \MVC\DataType\DTArrayObject::create()->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('sFolderFail')->set_sValue($this->sFolderFail))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
 		return $this->sFolderFail;
 	}
 
 	/**
 	 * @return int
+	 * @throws \ReflectionException
 	 */
 	public function get_iAmountToSpool()
 	{
+		\MVC\Event::RUN ('Config.get_iAmountToSpool.before', \MVC\DataType\DTArrayObject::create()->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('iAmountToSpool')->set_sValue($this->iAmountToSpool))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
 		return $this->iAmountToSpool;
 	}
 
 	/**
 	 * @return int
+	 * @throws \ReflectionException
 	 */
 	public function get_iMaxSecondsOfRetry()
 	{
+		\MVC\Event::RUN ('Config.get_iMaxSecondsOfRetry.before', \MVC\DataType\DTArrayObject::create()->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('iMaxSecondsOfRetry')->set_sValue($this->iMaxSecondsOfRetry))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
 		return $this->iMaxSecondsOfRetry;
 	}
 
 	/**
-	 * @return string
+	 * @return \Closure
+	 * @throws \ReflectionException
 	 */
 	public function get_oCallback()
 	{
+		\MVC\Event::RUN ('Config.get_oCallback.before', \MVC\DataType\DTArrayObject::create()->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('oCallback')->set_sValue($this->oCallback))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
 		return $this->oCallback;
 	}
 
@@ -420,14 +504,6 @@ class Config
 		}
 
 		return $this;
-	}
-
-	/**
-	 * @return string JSON
-	 */
-	public function getDataTypeConfigJSON()
-	{
-		return '{"name":"Config","file":"Config.php","extends":"","namespace":"Email\\\\DataType","constant":[],"property":[{"key":"sAbsolutePathToFolderSpooler","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"sAbsolutePathToFolderAttachment","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"aIgnoreFile","var":"array","value":["..",".",".ignoreMe"],"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"sFolderNew","var":"string","value":"new","visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"sFolderDone","var":"string","value":"done","visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"sFolderRetry","var":"string","value":"retry","visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"sFolderFail","var":"string","value":"fail","visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"iAmountToSpool","var":"int","value":10,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"iMaxSecondsOfRetry","var":"int","value":7200,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"oCallback","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true}],"createHelperMethods":true}';
 	}
 
 }

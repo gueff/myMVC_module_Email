@@ -12,52 +12,61 @@
 namespace Email\Controller;
 
 use Email\DataType\Config;
-use MVC\Registry;
 
-class Index
+class Index implements \MVC\MVCInterface\Controller
 {
-    /**
-     * @var array
-     */
-    protected $aJson;
-
     /**
      * @var \Email\Model\Index
      */
-    protected $oModelEmail;
-	
+    public $oModelEmail;
+
+    public static function __preconstruct ()
+    {
+        ;
+    }
+
     /**
-     * Index constructor.
-     * @param $sString
      * @throws \ReflectionException
      */
-	public function __construct($sString)
+	public function __construct(array $aConfig = array())
 	{
-        // decode JSON
-        $this->aJson = json_decode($sString, true);
-		
+        (true === empty($aConfig))
+            ? $aConfig = \MVC\Config::MODULE('Email')
+            : false
+        ;
 		$this->oModelEmail = new \Email\Model\Index(
-		    Config::create(
-		        Registry::get('MODULE_EMAIL_CONFIG')
-            )
+		    Config::create($aConfig)
         );
-	}	
+	}
 
 	/**
 	 * Processes the mails to be sent in the spooler folder
 	 */
-	public function spool ()
+	public function spool()
 	{
-		$this->oModelEmail->spool();
-		exit();		
+		return $this->oModelEmail->spool();
 	}
 	
 	/**
 	 * Escalation to failed mails
 	 */
-	public function escalate ()
+	public function escalate()
 	{
-		$this->oModelEmail->escalate();
-		exit();		
-	}	
+		return $this->oModelEmail->escalate();
+	}
+
+    /**
+     * deletes older emails and attachments from spooler
+     * @return null
+     * @throws \ReflectionException
+     */
+    public function cleanup()
+    {
+        return $this->oModelEmail->cleanup();
+    }
+
+    public function __destruct()
+    {
+        ;
+    }
 }

@@ -1,0 +1,14 @@
+.svn
+.git
+.idea
+*.tar.gz
+vendor
+*.sh
+**/*.sh
+_gitPull.sh
+_gitPush.sh
+_gitPush.sh.example
+_phanlistcreate.sh
+Changelog.md
+**/*.min.css
+**/*.min.js

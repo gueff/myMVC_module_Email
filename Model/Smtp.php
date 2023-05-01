@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Smtp.php
  *
@@ -12,10 +13,10 @@
 namespace Email\Model;
 
 use Email\DataType\Email;
+use MVC\Config;
 use MVC\DataType\DTArrayObject;
 use MVC\DataType\DTKeyValue;
 use MVC\Event;
-use MVC\Registry;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -23,15 +24,14 @@ use PHPMailer\PHPMailer\Exception;
 class Smtp
 {
     /**
-     * @param \Email\DataType\Email $oEmail
-     *
-     * @return \MVC\DataType\DTArrayObject
+     * @param Email $oEmail
+     * @return DTArrayObject
      * @throws \ReflectionException
      */
     public static function sendViaPhpMailer(Email $oEmail)
     {
+        /** @var boolean $bSuccess */
         $bSuccess = false;
-        $sMessage = __METHOD__;
         $oException = null;
 
         try {
@@ -40,12 +40,15 @@ class Smtp
 
             // Specify the SMTP settings.
             $oPHPMailer->isSMTP();
-            $oPHPMailer->Username   = Registry::get('MODULE_EMAIL_CONFIG')['sUsername'];
-            $oPHPMailer->Password   = Registry::get('MODULE_EMAIL_CONFIG')['sPassword'];
-            $oPHPMailer->Host       = Registry::get('MODULE_EMAIL_CONFIG')['sHost'];
-            $oPHPMailer->Port       = Registry::get('MODULE_EMAIL_CONFIG')['iPort'];
-            $oPHPMailer->SMTPAuth   = Registry::get('MODULE_EMAIL_CONFIG')['bAuth'];
-            $oPHPMailer->SMTPSecure = Registry::get('MODULE_EMAIL_CONFIG')['sSecure'];
+            $oPHPMailer->CharSet    = 'UTF-8';
+            $oPHPMailer->Encoding   = 'base64';
+
+            $oPHPMailer->Username   = Config::MODULE('Email')['sUsername'];
+            $oPHPMailer->Password   = Config::MODULE('Email')['sPassword'];
+            $oPHPMailer->Host       = Config::MODULE('Email')['sHost'];
+            $oPHPMailer->Port       = Config::MODULE('Email')['iPort'];
+            $oPHPMailer->SMTPAuth   = Config::MODULE('Email')['bAuth'];
+            $oPHPMailer->SMTPSecure = Config::MODULE('Email')['sSecure'];
 
             // Specify the content of the message.
             $oPHPMailer->setFrom(
@@ -72,7 +75,6 @@ class Smtp
                 foreach ($aDTArrayObject as $aDTKeyValue)
                 {
                     $oDTKeyValue = DTKeyValue::create($aDTKeyValue);
-
                     $oPHPMailer->addAttachment(
                         $oDTKeyValue->get_sValue()['file'],
                         $oDTKeyValue->get_sValue()['name']
@@ -80,7 +82,6 @@ class Smtp
                 }
             }
 
-            $oPHPMailer->CharSet = 'UTF-8';
             $bSuccess = $oPHPMailer->Send();
             $sMessage = json_encode($bSuccess);
 
@@ -89,13 +90,10 @@ class Smtp
             $bSuccess = false;
             $sMessage = $oException->getMessage();
 
-            Event::RUN ('mvc.error',
+            Event::run ('mvc.error',
                 DTArrayObject::create()
-                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('bSuccess')->set_sValue(false))
-                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('sNextStatus')->set_sValue('retry'))
                     ->add_aKeyValue(DTKeyValue::create()->set_sKey('sMessage')->set_sValue($oException->getMessage()))
                     ->add_aKeyValue(DTKeyValue::create()->set_sKey('oException')->set_sValue($oException))
-                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('oEmail')->set_sValue($oEmail))
             );
 
         } catch (Exception $oException) {
@@ -103,23 +101,19 @@ class Smtp
             $bSuccess = false;
             $sMessage = $oException->getMessage();
 
-            Event::RUN ('mvc.error',
+            Event::run ('mvc.error',
                 DTArrayObject::create()
-                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('bSuccess')->set_sValue(false))
-                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('sNextStatus')->set_sValue('retry'))
                     ->add_aKeyValue(DTKeyValue::create()->set_sKey('sMessage')->set_sValue($oException->getMessage()))
                     ->add_aKeyValue(DTKeyValue::create()->set_sKey('oException')->set_sValue($oException))
-                    ->add_aKeyValue(DTKeyValue::create()->set_sKey('oEmail')->set_sValue($oEmail))
             );
         }
 
         $oResponse = DTArrayObject::create()
             ->add_aKeyValue(DTKeyValue::create()->set_sKey('bSuccess')->set_sValue($bSuccess))
-            ->add_aKeyValue(DTKeyValue::create()->set_sKey('sNextStatus')->set_sValue(((true === $bSuccess) ? 'done' : 'retry')))
             ->add_aKeyValue(DTKeyValue::create()->set_sKey('sMessage')->set_sValue($sMessage))
-            ->add_aKeyValue(DTKeyValue::create()->set_sKey('oEmail')->set_sValue($oEmail))
-            ->add_aKeyValue(DTKeyValue::create()->set_sKey('oException')->set_sValue($oException))
-        ;
+            ->add_aKeyValue(DTKeyValue::create()->set_sKey('oException')->set_sValue($oException));
+
+        Event::run('email.model.index.send.response', $oResponse);
 
         return $oResponse;
     }

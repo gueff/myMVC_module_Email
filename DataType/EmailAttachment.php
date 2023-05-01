@@ -5,21 +5,22 @@
  */
 namespace Email\DataType;
 
+use MVC\MVCTrait\TraitDataType;
+
 class EmailAttachment
 {
-	const DTHASH = '41ecad95b34a10ad2600c64acdef3780';
+	use TraitDataType;
+
+	const DTHASH = '6f482d927bafbf82e9c290657eb5c7df';
 
 	/**
+	 * @required false
 	 * @var string
 	 */
 	protected $name;
 
 	/**
-	 * @var string
-	 */
-	protected $content;
-
-	/**
+	 * @required false
 	 * @var string
 	 */
 	protected $file;
@@ -27,11 +28,13 @@ class EmailAttachment
 	/**
 	 * EmailAttachment constructor.
 	 * @param array $aData
+	 * @throws \ReflectionException 
 	 */
 	public function __construct(array $aData = array())
 	{
+		\MVC\Event::RUN ('EmailAttachment.__construct.before', \MVC\DataType\DTArrayObject::create($aData)->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
 		$this->name = '';
-		$this->content = '';
 		$this->file = '';
 
 		foreach ($aData as $sKey => $mValue)
@@ -43,73 +46,73 @@ class EmailAttachment
 				$this->$sMethod($mValue);
 			}
 		}
+
+		\MVC\Event::RUN ('EmailAttachment.__construct.after', \MVC\DataType\DTArrayObject::create($aData));
 	}
 
     /**
      * @param array $aData
      * @return EmailAttachment
+     * @throws \ReflectionException
      */
     public static function create(array $aData = array())
     {
+        \MVC\Event::RUN ('EmailAttachment.create.before', \MVC\DataType\DTArrayObject::create($aData)->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+        
         $oObject = new self($aData);
 
+        \MVC\Event::RUN ('EmailAttachment.create.after', \MVC\DataType\DTArrayObject::create()->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('EmailAttachment')->set_sValue($oObject)));
+        
         return $oObject;
     }
 
 	/**
-	 * @param string $mValue 
+	 * @param string $aValue 
 	 * @return $this
+	 * @throws \ReflectionException
 	 */
-	public function set_name($mValue)
+	public function set_name($aValue)
 	{
-		$this->name = $mValue;
+		\MVC\Event::RUN ('EmailAttachment.set_name.before', \MVC\DataType\DTArrayObject::create(array('name' => $aValue))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
+		$this->name = $aValue;
 
 		return $this;
 	}
 
 	/**
-	 * @param string $mValue 
+	 * @param string $aValue 
 	 * @return $this
+	 * @throws \ReflectionException
 	 */
-	public function set_content($mValue)
+	public function set_file($aValue)
 	{
-		$this->content = $mValue;
+		\MVC\Event::RUN ('EmailAttachment.set_file.before', \MVC\DataType\DTArrayObject::create(array('file' => $aValue))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
 
-		return $this;
-	}
-
-	/**
-	 * @param string $mValue 
-	 * @return $this
-	 */
-	public function set_file($mValue)
-	{
-		$this->file = $mValue;
+		$this->file = $aValue;
 
 		return $this;
 	}
 
 	/**
 	 * @return string
+	 * @throws \ReflectionException
 	 */
 	public function get_name()
 	{
+		\MVC\Event::RUN ('EmailAttachment.get_name.before', \MVC\DataType\DTArrayObject::create()->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('name')->set_sValue($this->name))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
 		return $this->name;
 	}
 
 	/**
 	 * @return string
-	 */
-	public function get_content()
-	{
-		return $this->content;
-	}
-
-	/**
-	 * @return string
+	 * @throws \ReflectionException
 	 */
 	public function get_file()
 	{
+		\MVC\Event::RUN ('EmailAttachment.get_file.before', \MVC\DataType\DTArrayObject::create()->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('file')->set_sValue($this->file))->add_aKeyValue(\MVC\DataType\DTKeyValue::create()->set_sKey('aBacktrace')->set_sValue(\MVC\Debug::prepareBacktraceArray(debug_backtrace()))));
+
 		return $this->file;
 	}
 
@@ -119,14 +122,6 @@ class EmailAttachment
 	public static function getPropertyName_name()
 	{
         return 'name';
-	}
-
-	/**
-	 * @return string
-	 */
-	public static function getPropertyName_content()
-	{
-        return 'content';
 	}
 
 	/**
@@ -189,14 +184,6 @@ class EmailAttachment
 		}
 
 		return $this;
-	}
-
-	/**
-	 * @return string JSON
-	 */
-	public function getDataTypeConfigJSON()
-	{
-		return '{"name":"EmailAttachment","file":"EmailAttachment.php","extends":"","namespace":"Email\\\\DataType","constant":[],"property":[{"key":"name","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"content","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true},{"key":"file","var":"string","value":null,"visibility":"protected","static":false,"setter":true,"getter":true,"explicitMethodForValue":false,"listProperty":true,"createStaticPropertyGetter":true,"setValueInConstructor":true}],"createHelperMethods":true}';
 	}
 
 }
